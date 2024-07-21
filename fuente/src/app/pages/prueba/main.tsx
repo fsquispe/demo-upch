@@ -8,7 +8,6 @@ import { PanelBotones, } from "./panel-botones";
 import { PanelFiltros, } from "./panel-filtros";
 import { PanelBusqueda } from "./panel-busqueda";
 import { Tabla } from "./tabla/index";
-
 import { faCheckSquare, faLink, } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
 
@@ -36,6 +35,7 @@ export const Main : React.FC<IProps> = (props) => {
   const consultar = async () => {
     try {
       setEstado(eEstado.procesando);
+      setFiltro({ ...filtro, textoBusqueda: "", })
       const settings = SettingsService.getInstance();
       const ruService = new RamdomUserService(settings.apiRandomUserBaseUrl);
       const lst = await ruService.getUsers(
