@@ -7,6 +7,7 @@ import { RamdomUserService, } from "@/app/services";
 import { PanelBotones, } from "./panel-botones";
 import { PanelFiltros, } from "./panel-filtros";
 import { PanelBusqueda } from "./panel-busqueda";
+import { Tabla } from "./tabla";
 
 import { faCheckSquare, faLink, } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
@@ -16,22 +17,22 @@ interface IProps {
 };
 
 export interface IFiltro {
-  codigoBanco: number;
-  codigoCuentaBancaria: number;
-  porTipoFecha: number;
+  textoBusqueda: string;
+  codigoNacionalidad: string;
+  codigoGenero: string;
 }
 
-export const Main : React.FC<IProps> = ({ smTipos }) => {
+export const Main : React.FC<IProps> = (props) => {
   const [estado, setEstado] = useState<eEstado>(eEstado.normal);
   const [mostrarFiltros, setMostrarFiltros] = useState<boolean>(false);
-
-  //const [depositos, setDepositos] = useState<IBancoDeposito[]>([]);
-  const [error, setError] = useState<IError>({ message: "" });
   const [filtro, setFiltro] = useState<IFiltro>({
-    codigoBanco: -1,
-    codigoCuentaBancaria: -1,
-    porTipoFecha: 1,
+    textoBusqueda: "",
+    codigoNacionalidad: "",
+    codigoGenero: "",
   });
+  const [error, setError] = useState<IError>({ message: "" });
+  //const [depositos, setDepositos] = useState<IBancoDeposito[]>([]);
+
 
   const consultar = async () => {
     try {
@@ -64,11 +65,22 @@ export const Main : React.FC<IProps> = ({ smTipos }) => {
         setMostrarFiltros={(v) => setMostrarFiltros(v)}
       />
 
-      {(mostrarFiltros) && <PanelFiltros />}
+      {
+        (mostrarFiltros) &&
+        <PanelFiltros
+          smTipos={props.smTipos}
+          filtro={filtro}
+          setFiltro={(v)=>setFiltro(v)}
+        />
+      }
       
       <PanelBusqueda
+        filtro={filtro}
+        setFiltro={(v)=>setFiltro(v)}
       />
 
+      <Tabla
+      />
     </>
   );
 };

@@ -9,19 +9,19 @@ interface IProps {
   setMostrarFiltros: (v: boolean) => void,
 };
 
-export const PanelBotones : React.FC<IProps> = ({ mostrarFiltros, setMostrarFiltros, }) => {
+export const PanelBotones : React.FC<IProps> = (props) => {
   return (
     <Row>
       <Col className="mb-3">
         <ButtonX
           outline
-          active={mostrarFiltros}
+          active={props.mostrarFiltros}
           className="me-2"
           //disabled={(estado === eEstado.procesando)}
           color="primary"
           icon={faSliders}
           text="Filtros"
-          onClick={()=>setMostrarFiltros(!mostrarFiltros)}
+          onClick={()=>props.setMostrarFiltros(!props.mostrarFiltros)}
         />
         <ButtonX
           outline
