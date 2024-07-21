@@ -1,6 +1,6 @@
 import { Error, } from "@/core/models";
 import { BaseService } from "@/core/services";
-import { ISmTipos, SmTipos, Nacionalidad, Genero } from "@/app/models";
+import { ISmTipos, SmTipos, Nacionalidad, Genero, IUserResponse } from "@/app/models";
 
 export class RamdomUserService extends BaseService {
 
@@ -53,5 +53,15 @@ export class RamdomUserService extends BaseService {
       throw new Error(error);
     }
   }
+
+  public async getUsers() : Promise<IUserResponse> {
+    try {
+      const response = await this.http.get<IUserResponse>(`/?results=50`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
 
 }

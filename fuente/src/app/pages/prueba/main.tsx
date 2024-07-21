@@ -1,7 +1,7 @@
 import React, { useState, useEffect, } from "react";
 import { Container } from "reactstrap";
 import { Error, IError, eEstado, } from "@/core/models";
-import { ISmTipos, SmTipos, } from "@/app/models";
+import { ISmTipos, IUser, SmTipos, } from "@/app/models";
 import { SettingsService, } from "@/core/services";
 import { RamdomUserService, } from "@/app/services";
 import { PanelBotones, } from "./panel-botones";
@@ -31,15 +31,16 @@ export const Main : React.FC<IProps> = (props) => {
     codigoGenero: "",
   });
   const [error, setError] = useState<IError>({ message: "" });
-  //const [depositos, setDepositos] = useState<IBancoDeposito[]>([]);
+  const [usuarios, setUsuarios] = useState<IUser[]>([]);
 
 
   const consultar = async () => {
     try {
       setEstado(eEstado.procesando);
       const settings = SettingsService.getInstance();
-      /*const dcService = new DepositosComService(settings.apiDepositosComBaseUrl);
-      setDepositos(await dcService.postProgramarReclamo(IFiltroABancoDepositoRequest(filtro)));*/
+      const ruService = new RamdomUserService(settings.apiRandomUserBaseUrl);
+      const lst = await ruService.getUsers();
+      setUsuarios(await lst.results);
       setEstado(eEstado.normal);
     } catch (e) {
       setError({ message: (e as Error).message, });
@@ -53,11 +54,11 @@ export const Main : React.FC<IProps> = (props) => {
 
   return (
     <>
-      <p>
       <h3 className="mb-0">Mi tabla</h3>
-      <a className="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="https://github.com/fsquispe" target="_blank">
-        <Icon icon={faLink} className="me-1" />fsquispe
-      </a>
+      <p>
+        <a className="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="https://github.com/fsquispe" target="_blank">
+          <Icon icon={faLink} className="me-1" />fsquispe
+        </a>
       </p>
       
       <PanelBotones
