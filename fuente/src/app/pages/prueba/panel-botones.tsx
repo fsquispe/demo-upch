@@ -5,8 +5,9 @@ import { eEstado } from "@/core/models";
 import { faEdit, faSliders, faTrash, } from "@fortawesome/free-solid-svg-icons";
 
 interface IProps {
-  mostrarFiltros: boolean,
-  setMostrarFiltros: (v: boolean) => void,
+  estado: eEstado;
+  mostrarFiltros: boolean;
+  setMostrarFiltros: (v: boolean) => void;
 };
 
 export const PanelBotones : React.FC<IProps> = (props) => {
@@ -17,7 +18,7 @@ export const PanelBotones : React.FC<IProps> = (props) => {
           outline
           active={props.mostrarFiltros}
           className="me-2"
-          //disabled={(estado === eEstado.procesando)}
+          disabled={(props.estado === eEstado.procesando)}
           color="primary"
           icon={faSliders}
           text="Filtros"
@@ -25,8 +26,7 @@ export const PanelBotones : React.FC<IProps> = (props) => {
         />
         <ButtonX
           outline
-          //active
-          //disabled={(estado === eEstado.procesando)}
+          disabled={(props.estado === eEstado.procesando)}
           className="me-2"
           color="warning"
           icon={faEdit}
@@ -35,8 +35,7 @@ export const PanelBotones : React.FC<IProps> = (props) => {
         />
         <ButtonX
           outline
-          //active
-          //disabled={(estado === eEstado.procesando)}
+          disabled={(props.estado === eEstado.procesando)}
           color="danger"
           icon={faTrash}
           text="Eliminar"

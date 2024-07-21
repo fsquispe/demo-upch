@@ -41,22 +41,21 @@ export class RamdomUserService extends BaseService {
       smTipos.generos = [
         new Genero('male', 'Masculino'),
         new Genero('female', 'Femenino'),
-        //new Genero('genderqueer', 'Género no binario o queer'),
       ];
 
       const sleep = (ms : number) => {
         return new Promise(resolve => setTimeout(resolve, ms));
       }
-      await sleep(1000);
+      await sleep(500);
       return smTipos;
     } catch (error) {
       throw new Error(error);
     }
   }
 
-  public async getUsers() : Promise<IUserResponse> {
+  public async getUsers(codigoNacionalidad: string, codigoGenero: string) : Promise<IUserResponse> {
     try {
-      const response = await this.http.get<IUserResponse>(`/?results=50`);
+      const response = await this.http.get<IUserResponse>(`/?results=10&gender=${codigoGenero}&nat=${codigoNacionalidad}`);
       return response.data;
     } catch (error) {
       throw new Error(error);

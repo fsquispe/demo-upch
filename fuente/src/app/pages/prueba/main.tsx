@@ -7,7 +7,7 @@ import { RamdomUserService, } from "@/app/services";
 import { PanelBotones, } from "./panel-botones";
 import { PanelFiltros, } from "./panel-filtros";
 import { PanelBusqueda } from "./panel-busqueda";
-import { Tabla } from "./tabla";
+import { Tabla } from "./tabla/index";
 
 import { faCheckSquare, faLink, } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
@@ -24,23 +24,24 @@ export interface IFiltro {
 
 export const Main : React.FC<IProps> = (props) => {
   const [estado, setEstado] = useState<eEstado>(eEstado.normal);
-  const [mostrarFiltros, setMostrarFiltros] = useState<boolean>(false);
+  const [mostrarFiltros, setMostrarFiltros] = useState<boolean>(true);
   const [filtro, setFiltro] = useState<IFiltro>({
     textoBusqueda: "",
     codigoNacionalidad: "",
     codigoGenero: "",
   });
-  const [error, setError] = useState<IError>({ message: "" });
   const [usuarios, setUsuarios] = useState<IUser[]>([]);
-
-
+  const [error, setError] = useState<IError>({ message: "" });
+  
   const consultar = async () => {
     try {
       setEstado(eEstado.procesando);
       const settings = SettingsService.getInstance();
       const ruService = new RamdomUserService(settings.apiRandomUserBaseUrl);
-      const lst = await ruService.getUsers();
-      setUsuarios(await lst.results);
+      const lst = await ruService.getUsers(
+        filtro.codigoNacionalidad, filtro.codigoGenero
+      );
+      setUsuarios(lst.results);
       setEstado(eEstado.normal);
     } catch (e) {
       setError({ message: (e as Error).message, });
@@ -52,16 +53,25 @@ export const Main : React.FC<IProps> = (props) => {
     consultar();
   }, []);
 
+  const filteredLst = usuarios.filter((obj) =>
+    (JSON.stringify(obj).toLowerCase().indexOf(filtro.textoBusqueda) !== -1)
+  );
+
   return (
     <>
       <h3 className="mb-0">Mi tabla</h3>
       <p>
-        <a className="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="https://github.com/fsquispe" target="_blank">
+        <a
+          className="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+          href="https://github.com/fsquispe"
+          target="_blank"
+        >
           <Icon icon={faLink} className="me-1" />fsquispe
         </a>
       </p>
       
       <PanelBotones
+        estado={estado}
         mostrarFiltros={mostrarFiltros}
         setMostrarFiltros={(v) => setMostrarFiltros(v)}
       />
@@ -69,18 +79,24 @@ export const Main : React.FC<IProps> = (props) => {
       {
         (mostrarFiltros) &&
         <PanelFiltros
+          estado={estado}  
           smTipos={props.smTipos}
           filtro={filtro}
           setFiltro={(v)=>setFiltro(v)}
+          consultar={consultar}
         />
       }
       
       <PanelBusqueda
+        estado={estado}
         filtro={filtro}
         setFiltro={(v)=>setFiltro(v)}
       />
 
       <Tabla
+        estado={estado}
+        error={error}
+        usuarios={filteredLst}
       />
     </>
   );
