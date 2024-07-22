@@ -10,6 +10,7 @@ interface IProps {
   paginaActual: number;
   numeroPaginas: number;
   setPaginaActual: (v: number) => void;
+  seleccionados: number;
 };
 
 export const Paginacion : React.FC<IProps> = (props) => {
@@ -22,6 +23,9 @@ export const Paginacion : React.FC<IProps> = (props) => {
     <Row className="mt-3">
       <Col className="col-auto">
         <h6>#Registros: <Badge pill color="primary">{props.totalRegistros}</Badge></h6>
+      </Col>
+      <Col className="col-auto">
+        <h6>#Seleccionados: <Badge pill color="success">{props.seleccionados}</Badge></h6>
       </Col>
       <Col></Col>
       <Col className="col-auto">

@@ -59,7 +59,7 @@ export const Main : React.FC<IProps> = (props) => {
       <p>
         <a
           className="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
-          href="https://github.com/fsquispe"
+          href="https://github.com/fsquispe/demo-upch"
           target="_blank"
         >
           <Icon icon={faLink} className="me-1" />fsquispe
@@ -75,10 +75,10 @@ export const Main : React.FC<IProps> = (props) => {
       {
         (mostrarFiltros) &&
         <PanelFiltros
-          estado={estado}  
+          estado={estado}
           smTipos={props.smTipos}
           filtro={filtro}
-          setFiltro={(v)=>setFiltro(v)}
+          setFiltro={(v) => setFiltro(v)}
           consultar={consultar}
         />
       }

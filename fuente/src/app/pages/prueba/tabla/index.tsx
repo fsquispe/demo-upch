@@ -1,5 +1,5 @@
 import React, { useState, useEffect, } from "react";
-import { Table, } from "reactstrap";
+import { Table, Input, } from "reactstrap";
 import { eEstado, IError } from "@/core/models";
 import { Loader, ErrorAlert, } from "@/core/ui";
 import { IUsuario, } from "@/app/models";
@@ -24,6 +24,7 @@ interface IOrden{
 export const Tabla : React.FC<IProps> = (props) => {
   const registrosPorPagina = 25;
   const [paginaActual, setPaginaActual] = useState<number>(1);
+  const [seleccionados, setSeleccionados] = useState<string[]>([]);
   const [orden, setOrden] = useState<IOrden>({
     campo: "uuid",
     ascendente: true,
@@ -34,8 +35,13 @@ export const Tabla : React.FC<IProps> = (props) => {
     setOrden({
       campo: "uuid",
       ascendente: true,
-    })
+    });
+    setSeleccionados([]);
   }, [props.usuarios]);
+
+  useEffect(() => {
+    setSeleccionados([]);
+  }, [paginaActual]);
 
   const ordenarPor = (campo: keyof IUsuario) => {
     setOrden(prevOrden => ({
@@ -68,6 +74,32 @@ export const Tabla : React.FC<IProps> = (props) => {
   const numeroPaginas = Math.trunc(totalRegistros / registrosPorPagina) + ((totalRegistros % registrosPorPagina > 0) ? 1 : 0);
   const i = (paginaActual - 1) * registrosPorPagina;
   const j = Math.min(paginaActual * registrosPorPagina, totalRegistros);
+  const usuariosRender = usuariosOrdenados.slice(i,j);
+
+  const alternarSeleccion = (uuid: string) => {
+    const id = seleccionados.indexOf(uuid);
+    if (id === -1) {
+      setSeleccionados([...seleccionados, uuid]);
+    } else {
+      setSeleccionados([
+        ...seleccionados.slice(0, id),
+        ...seleccionados.slice(id + 1)
+      ]);
+    }
+  };
+
+  const esSeleccionado = (uuid: string) => {
+    const id = seleccionados.indexOf(uuid);
+    return (id !== -1);
+  };
+
+  const seleccionarTodo = () => {
+    if (seleccionados.length === usuariosRender.length) {
+      setSeleccionados([]);
+    } else {
+      setSeleccionados(usuariosRender.map(user => user.uuid));
+    }
+  }
 
   if (props.estado === eEstado.procesando)
     return (<Loader full type="grow" text="Consultando..." />);
@@ -81,8 +113,14 @@ export const Tabla : React.FC<IProps> = (props) => {
         <Table className="align-middle text-center lh-lg shadow-sm bg-body rounded"  striped hover size="sm">
           <thead className="border-bottom border-black">
             <tr>
-              <th></th>
-              <th></th>
+              <th>
+                <Input
+                  type="checkbox"
+                  checked={(seleccionados.length === usuariosRender.length)}
+                  onChange={() => seleccionarTodo()}
+                />
+              </th>
+              <th>Foto</th>
               <th className={`clickable ${orden.campo === 'nombre' ? 'bg-info-subtle' : ''}`} onClick={() => ordenarPor("nombre")}>Nombre <Icon icon={obtenerIcono("nombre")} /></th>
               <th className={`clickable ${orden.campo === 'genero' ? 'bg-info-subtle' : ''}`} style={{ minWidth: "100px", }} onClick={() => ordenarPor("genero")}>Genero <Icon icon={obtenerIcono("genero")} /></th>
               <th className={`clickable ${orden.campo === 'direccion' ? 'bg-info-subtle' : ''}`} onClick={() => ordenarPor("direccion")}>Dirección <Icon icon={obtenerIcono("direccion")} /></th>
@@ -100,8 +138,13 @@ export const Tabla : React.FC<IProps> = (props) => {
                   </td>
                 </tr>
               :
-              usuariosOrdenados.slice(i,j).map((usuario, index) => (
-                <Fila key={index} usuario={usuario} />
+              usuariosRender.map((usuario, index) => (
+                <Fila
+                  key={index}
+                  usuario={usuario}
+                  seleccionado={esSeleccionado(usuario.uuid)}
+                  seleccionar={() => alternarSeleccion(usuario.uuid)}
+                />
               ))
             }
           </tbody>
@@ -114,7 +157,8 @@ export const Tabla : React.FC<IProps> = (props) => {
         totalRegistros={usuariosOrdenados.length}
         paginaActual={paginaActual}
         numeroPaginas={numeroPaginas}
-        setPaginaActual={(v:number) => setPaginaActual(v) }
+        setPaginaActual={(v:number) => setPaginaActual(v)}
+        seleccionados={seleccionados.length}
       />
     </>
   );
