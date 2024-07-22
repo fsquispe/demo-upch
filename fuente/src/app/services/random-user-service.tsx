@@ -1,6 +1,7 @@
 import { Error, } from "@/core/models";
 import { BaseService } from "@/core/services";
 import { ISmTipos, SmTipos, Nacionalidad, Genero, IUserResponse } from "@/app/models";
+import { IUsuario, Usuario } from "../models/usuario";
 
 export class RamdomUserService extends BaseService {
 
@@ -53,10 +54,10 @@ export class RamdomUserService extends BaseService {
     }
   }
 
-  public async getUsers(codigoNacionalidad: string, codigoGenero: string) : Promise<IUserResponse> {
+  public async getUsuarios(codigoNacionalidad: string, codigoGenero: string) : Promise<IUsuario[]> {
     try {
       const response = await this.http.get<IUserResponse>(`/?results=10&gender=${codigoGenero}&nat=${codigoNacionalidad}`);
-      return response.data;
+      return response.data.results.map(x => new Usuario(x));
     } catch (error) {
       throw new Error(error);
     }

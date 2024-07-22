@@ -1,14 +1,13 @@
 import React, { useState, useEffect, } from "react";
-import { Container } from "reactstrap";
 import { Error, IError, eEstado, } from "@/core/models";
-import { ISmTipos, IUser, SmTipos, } from "@/app/models";
+import { ISmTipos, IUsuario, } from "@/app/models";
 import { SettingsService, } from "@/core/services";
 import { RamdomUserService, } from "@/app/services";
 import { PanelBotones, } from "./panel-botones";
 import { PanelFiltros, } from "./panel-filtros";
 import { PanelBusqueda } from "./panel-busqueda";
 import { Tabla } from "./tabla/index";
-import { faCheckSquare, faLink, } from "@fortawesome/free-solid-svg-icons";
+import { faLink, } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
 
 interface IProps {
@@ -29,7 +28,7 @@ export const Main : React.FC<IProps> = (props) => {
     codigoNacionalidad: "",
     codigoGenero: "",
   });
-  const [usuarios, setUsuarios] = useState<IUser[]>([]);
+  const [usuarios, setUsuarios] = useState<IUsuario[]>([]);
   const [error, setError] = useState<IError>({ message: "" });
   
   const consultar = async () => {
@@ -38,10 +37,7 @@ export const Main : React.FC<IProps> = (props) => {
       setFiltro({ ...filtro, textoBusqueda: "", })
       const settings = SettingsService.getInstance();
       const ruService = new RamdomUserService(settings.apiRandomUserBaseUrl);
-      const lst = await ruService.getUsers(
-        filtro.codigoNacionalidad, filtro.codigoGenero
-      );
-      setUsuarios(lst.results);
+      setUsuarios(await ruService.getUsuarios(filtro.codigoNacionalidad, filtro.codigoGenero));
       setEstado(eEstado.normal);
     } catch (e) {
       setError({ message: (e as Error).message, });
@@ -53,7 +49,7 @@ export const Main : React.FC<IProps> = (props) => {
     consultar();
   }, []);
 
-  const filteredLst = usuarios.filter((obj) =>
+  const usuariosFiltrados = usuarios.filter((obj) =>
     (JSON.stringify(obj).toLowerCase().indexOf(filtro.textoBusqueda) !== -1)
   );
 
@@ -96,7 +92,7 @@ export const Main : React.FC<IProps> = (props) => {
       <Tabla
         estado={estado}
         error={error}
-        usuarios={filteredLst}
+        usuarios={usuariosFiltrados}
       />
     </>
   );
