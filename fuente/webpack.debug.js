@@ -15,7 +15,7 @@ module.exports = merge(common, {
     new ReactRefreshWebpackPlugin(),
     new webpack.DefinePlugin({
       DEBUG: JSON.stringify(true),
-      API_RANDOMUSER_BASE_URL: JSON.stringify("https://randomuser.me/api"),
+      API_RANDOMUSER_BASE_URL: JSON.stringify("https://randomuser.me/api/1.4"),
     }),
   ],
   devtool: "eval-source-map",

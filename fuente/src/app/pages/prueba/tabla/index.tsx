@@ -1,4 +1,4 @@
-import React, { useState, } from "react";
+import React, { useState, useEffect, } from "react";
 import { Table, } from "reactstrap";
 import { eEstado, IError } from "@/core/models";
 import { Loader, ErrorAlert, } from "@/core/ui";
@@ -25,10 +25,18 @@ export const Tabla : React.FC<IProps> = (props) => {
   const registrosPorPagina = 25;
   const [paginaActual, setPaginaActual] = useState<number>(1);
   const [orden, setOrden] = useState<IOrden>({
-    campo: "nombre",
+    campo: "uuid",
     ascendente: true,
   });
   
+  useEffect(() => {
+    setPaginaActual(1);
+    setOrden({
+      campo: "uuid",
+      ascendente: true,
+    })
+  }, [props.usuarios]);
+
   const ordenarPor = (campo: keyof IUsuario) => {
     setOrden(prevOrden => ({
       campo,
@@ -76,7 +84,7 @@ export const Tabla : React.FC<IProps> = (props) => {
               <th></th>
               <th></th>
               <th className={`clickable ${orden.campo === 'nombre' ? 'bg-info-subtle' : ''}`} onClick={() => ordenarPor("nombre")}>Nombre <Icon icon={obtenerIcono("nombre")} /></th>
-              <th className={`clickable ${orden.campo === 'genero' ? 'bg-info-subtle' : ''}`} onClick={() => ordenarPor("genero")}>Genero <Icon icon={obtenerIcono("genero")} /></th>
+              <th className={`clickable ${orden.campo === 'genero' ? 'bg-info-subtle' : ''}`} style={{ minWidth: "100px", }} onClick={() => ordenarPor("genero")}>Genero <Icon icon={obtenerIcono("genero")} /></th>
               <th className={`clickable ${orden.campo === 'direccion' ? 'bg-info-subtle' : ''}`} onClick={() => ordenarPor("direccion")}>Dirección <Icon icon={obtenerIcono("direccion")} /></th>
               <th className={`clickable ${orden.campo === 'telefono' ? 'bg-info-subtle' : ''}`} onClick={() => ordenarPor("telefono")}>Teléfono <Icon icon={obtenerIcono("telefono")} /></th>
               <th className={`clickable ${orden.campo === 'correo' ? 'bg-info-subtle' : ''}`} onClick={() => ordenarPor("correo")}>Correo electrónico <Icon icon={obtenerIcono("correo")} /></th>

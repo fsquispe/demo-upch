@@ -21,19 +21,22 @@ export const Paginacion : React.FC<IProps> = (props) => {
   return (
     <Row className="mt-3">
       <Col className="col-auto">
-        <Badge color="primary">#Registros: {props.totalRegistros}</Badge>
+        <h6>#Registros: <Badge pill color="primary">{props.totalRegistros}</Badge></h6>
       </Col>
       <Col></Col>
       <Col className="col-auto">
-        <Badge color="primary">#Página: {props.paginaActual} de {props.numeroPaginas}</Badge>
+        { (props.numeroPaginas > 1) && <h6>Página: <Badge color="primary">{props.paginaActual} de {props.numeroPaginas}</Badge></h6> }
       </Col>
       <Col className="col-auto">
-        <PaginacionNavegacion
-          estado={props.estado}
-          numeroPaginas={props.numeroPaginas}
-          paginaActual={props.paginaActual}
-          setPaginaActual={props.setPaginaActual}
-        />
+        {
+          (props.numeroPaginas > 1) &&
+          <PaginacionNavegacion
+            estado={props.estado}
+            numeroPaginas={props.numeroPaginas}
+            paginaActual={props.paginaActual}
+            setPaginaActual={props.setPaginaActual}
+          />
+        }
       </Col>
     </Row>
   );
