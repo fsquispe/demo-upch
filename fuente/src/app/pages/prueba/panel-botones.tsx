@@ -1,5 +1,5 @@
-import React, { forwardRef, } from "react";
-import { Row, Col, Form, FormGroup, InputGroup, InputGroupText, Label, Input, } from "reactstrap";
+import React from "react";
+import { Row, Col, } from "reactstrap";
 import { ButtonX, } from "@/core/ui";
 import { eEstado } from "@/core/models";
 import { faEdit, faSliders, faTrash, } from "@fortawesome/free-solid-svg-icons";

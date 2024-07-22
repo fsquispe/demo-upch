@@ -1,10 +1,10 @@
 import React from 'react';
-import { Row, Col, Input} from "reactstrap";
+import { Row, Col, } from "reactstrap";
 import { ButtonX, InputSelectFilter, } from "@/core/ui";
 import { eEstado, } from "@/core/models";
 import { ISmTipos, } from "@/app/models";
 import { IFiltro, } from "./main";
-import { faEdit, faRefresh, faSliders, faTrash, } from "@fortawesome/free-solid-svg-icons";
+import { faRefresh,} from "@fortawesome/free-solid-svg-icons";
 
 interface IProps {
   estado: eEstado,

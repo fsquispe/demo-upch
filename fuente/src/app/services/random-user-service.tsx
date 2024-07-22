@@ -56,7 +56,7 @@ export class RamdomUserService extends BaseService {
 
   public async getUsuarios(codigoNacionalidad: string, codigoGenero: string) : Promise<IUsuario[]> {
     try {
-      const response = await this.http.get<IUserResponse>(`/?results=10&gender=${codigoGenero}&nat=${codigoNacionalidad}`);
+      const response = await this.http.get<IUserResponse>(`/?results=200&gender=${codigoGenero}&nat=${codigoNacionalidad}`);
       return response.data.results.map(x => new Usuario(x));
     } catch (error) {
       throw new Error(error);

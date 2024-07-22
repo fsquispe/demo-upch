@@ -1,0 +1,19 @@
+.clickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.clickable:hover {
+  background-color: #f1f1f1;
+}
+
+.tableFixHead {
+  overflow: auto;
+  overflow-x: hidden;
+  height: calc(100vh - 450px);
+}
+.tableFixHead thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}

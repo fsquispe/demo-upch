@@ -3,11 +3,11 @@ import { Table, } from "reactstrap";
 import { eEstado, IError } from "@/core/models";
 import { Loader, ErrorAlert, } from "@/core/ui";
 import { IUsuario, } from "@/app/models";
-import { IFiltro, } from "../main";
-import { faSortUp, faSortDown, } from "@fortawesome/free-solid-svg-icons";
-import { faSort, } from "@fortawesome/free-solid-svg-icons";
+import { Fila, } from "./fila";
+import { faSortUp, faSortDown, faSort, } from "@fortawesome/free-solid-svg-icons";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
+import "./tabla.css";
 
 interface IProps {
   estado: eEstado;
@@ -25,8 +25,7 @@ export const Tabla : React.FC<IProps> = (props) => {
     campo: "uuid",
     ascendente: true,
   });
-
-
+  
   const ordenarPor = (campo: keyof IUsuario) => {
     setOrden(prevOrden => ({
       campo,
@@ -38,22 +37,22 @@ export const Tabla : React.FC<IProps> = (props) => {
     return campo !== orden.campo ? faSort : orden.ascendente ? faSortUp : faSortDown;
   };
 
-  function sortArray<T>(array: T[], key: keyof T): T[] {
+  function ordernar<T>(array: T[], key: keyof T): T[] {
     return array.sort((a, b) => {
-      const valueA = a[key];
-      const valueB = b[key];
+      const valorA = a[key];
+      const valorB = b[key];
   
-      if (valueA < valueB) {
+      if (valorA < valorB) {
         return orden.ascendente ? -1 : 1;
       }
-      if (valueA > valueB) {
+      if (valorA > valorB) {
         return orden.ascendente ? 1 : -1;
       }
       return 0;
     });
   }
 
-  const usuariosOrdenados = sortArray(props.usuarios, orden.campo);
+  const usuariosOrdenados = ordernar(props.usuarios, orden.campo);
   
   if (props.estado === eEstado.procesando)
     return (<Loader full type="grow" text="Consultando..." />);
@@ -62,44 +61,35 @@ export const Tabla : React.FC<IProps> = (props) => {
     return (<ErrorAlert text={props.error.message} />);
 
   return (
-    <Table className="align-middle text-center lh-lg shadow-sm bg-body rounded" responsive striped hover size="sm">
-      <thead className="border-bottom border-black">
-        <tr>
-          <th></th>
-          <th></th>
-          <th className={`clickable ${orden.campo === 'nombre' ? 'bg-info-subtle' : ''}`} onClick={() => ordenarPor("nombre")}>Nombre <Icon icon={obtenerIcono("nombre")} /></th>
-          <th className={`clickable ${orden.campo === 'genero' ? 'bg-info-subtle' : ''}`} onClick={() => ordenarPor("genero")}>Genero <Icon icon={obtenerIcono("genero")} /></th>
-          <th className={`clickable ${orden.campo === 'direccion' ? 'bg-info-subtle' : ''}`} onClick={() => ordenarPor("direccion")}>Dirección <Icon icon={obtenerIcono("direccion")} /></th>
-          <th className={`clickable ${orden.campo === 'telefono' ? 'bg-info-subtle' : ''}`} onClick={() => ordenarPor("telefono")}>Teléfono <Icon icon={obtenerIcono("telefono")} /></th>
-          <th className={`clickable ${orden.campo === 'correo' ? 'bg-info-subtle' : ''}`} onClick={() => ordenarPor("correo")}>Correo electrónico <Icon icon={obtenerIcono("correo")} /></th>
-          <th className={`clickable ${orden.campo === 'nacionalidad' ? 'bg-info-subtle' : ''}`} onClick={() => ordenarPor("nacionalidad")}>País <Icon icon={obtenerIcono("nacionalidad")} /></th>
-        </tr>
-      </thead>
-      <tbody>
-        {
-          (usuariosOrdenados.length === 0) ?
-            <tr>
-              <td colSpan={8} className="table-warning lh-base">
-                No se encontraron resultados.
-              </td>
-            </tr>
-          :
-          usuariosOrdenados.map((usuario, index) => (
-            <tr key={index}>
-              <th></th>
-              <th>
-                <img src={usuario.foto} alt={usuario.uuid}  />
-              </th>
-              <td>{usuario.nombre}</td>
-              <td>{usuario.genero}</td>
-              <td>{usuario.direccion}</td>
-              <td>{usuario.telefono}</td>
-              <td>{usuario.correo}</td>
-              <td>{usuario.nacionalidad}</td>
-            </tr>
-          ))
-        }
-      </tbody>
-    </Table>
+    <div className="tableFixHead">
+      <Table className="align-middle text-center lh-lg shadow-sm bg-body rounded"  striped hover size="sm">
+        <thead className="border-bottom border-black">
+          <tr>
+            <th></th>
+            <th></th>
+            <th className={`clickable ${orden.campo === 'nombre' ? 'bg-info-subtle' : ''}`} onClick={() => ordenarPor("nombre")}>Nombre <Icon icon={obtenerIcono("nombre")} /></th>
+            <th className={`clickable ${orden.campo === 'genero' ? 'bg-info-subtle' : ''}`} onClick={() => ordenarPor("genero")}>Genero <Icon icon={obtenerIcono("genero")} /></th>
+            <th className={`clickable ${orden.campo === 'direccion' ? 'bg-info-subtle' : ''}`} onClick={() => ordenarPor("direccion")}>Dirección <Icon icon={obtenerIcono("direccion")} /></th>
+            <th className={`clickable ${orden.campo === 'telefono' ? 'bg-info-subtle' : ''}`} onClick={() => ordenarPor("telefono")}>Teléfono <Icon icon={obtenerIcono("telefono")} /></th>
+            <th className={`clickable ${orden.campo === 'correo' ? 'bg-info-subtle' : ''}`} onClick={() => ordenarPor("correo")}>Correo electrónico <Icon icon={obtenerIcono("correo")} /></th>
+            <th className={`clickable ${orden.campo === 'nacionalidad' ? 'bg-info-subtle' : ''}`} onClick={() => ordenarPor("nacionalidad")}>País <Icon icon={obtenerIcono("nacionalidad")} /></th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            (usuariosOrdenados.length === 0) ?
+              <tr>
+                <td colSpan={8} className="table-warning lh-base">
+                  No se encontraron resultados.
+                </td>
+              </tr>
+            :
+            usuariosOrdenados.map((usuario, index) => (
+              <Fila key={index} usuario={usuario} />
+            ))
+          }
+        </tbody>
+      </Table>
+    </div>
   );
 };
